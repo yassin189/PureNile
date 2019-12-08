@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script 
+    src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="crossorigin="">
+    </script> 
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/JavaScript"></script>
+    <title>PureNileMap</title>
+    <style>
+      #map
+       {
+        height: 100%;
+       }
+      html, body
+      {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>Welcome {{username}}</h1>
+
+    <div id="map">
+
+    </div>
+
+    <script>
+      //creating the map
+      const mymap = L.map('map').setView([30.0444,31.2357], 5);
+      const attribution ='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+      const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      const tiles = L.tileLayer(tileUrl, { attribution });
+      tiles.addTo(mymap);
+
+      //test marker 
+      // const marker = L.marker([30.0444,31.2357], 13).addTo(mymap);
+      try {
+      fetch('/put_map')
+       .then(function (response) {
+         return response.json();
+         }).then(function (dataArray)
+          {
+            let str="You have ";
+            let numberOfSensors=str.concat(dataArray.length," sensors");
+            alert(numberOfSensors);
+            
+            ////making The Map
+            //const mymap = L.map('map').setView([30.4663139, 30.921418], 8);
+
+              if (!((dataArray.length) == 1))
+              {
+                console.log("in condition");
+                
+                
+                for(let i = 0; i<dataArray.length; i++ )
+                { 
+                  console.log("in loop");
+                  console.log("there are more than one sensor belongs to that company")
+                  const latitude = dataArray[i][0];
+                  const longitude = dataArray[i][1];
+
+                  const marker = L.marker([latitude,longitude], 13).addTo(mymap);
+                  //const attribution ='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+                  //const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                  //const tiles = L.tileLayer(tileUrl, { attribution });
+                  //tiles.addTo(mymap);
+                }
+              }
+              else 
+                {
+                  console.log("only one sensor belongs to that company")
+                  const latitude = dataArray[0][0];
+                  const longitude = dataArray[0][1];
+                  const marker = L.marker([latitude,longitude], 13).addTo(mymap);
+                  //const attribution ='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+                  //const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                  //const tiles = L.tileLayer(tileUrl, { attribution });
+                  //tiles.addTo(mymap);              
+                }
+          
+          });
+        }
+        
+    catch (error) {
+      console.error('Error:', error);
+}
+    </script>
+  </body>
+</html>

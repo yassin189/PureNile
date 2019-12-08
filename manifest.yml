@@ -1,0 +1,18 @@
+declared-services:
+  idta-cloudant:
+    label: cloudantNoSQLDB
+    plan: Lite
+  idta-iot:
+    label: iotf-service
+    plan: iotf-service-free
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  domain: mybluemix.net
+  name: Iot-Analytics
+  disk_quota: 1024M
+  buildpack: python_buildpack
+  services:
+  - idta-cloudant
+  - idta-iot
